@@ -1,5 +1,5 @@
 # fastapi-mongodb-docker
-Dockerized Fastapi and MongoDB
+Dockerized Fastapi and MongoDB application
 
 # Setup
 Create .env file with values like in the .env_template file. 
