@@ -1,0 +1,38 @@
+version: '3.8'
+services:
+  app:
+    build: 
+      context: ./app
+    command: uvicorn app.main:app --host 0.0.0.0 --reload
+    volumes:
+      - .:/app
+    ports: 
+      - "8000:8000"
+    depends_on:
+      - mongodb
+
+  locust:
+    build:
+      context: ./locust
+    ports:
+     - "8089:8089"
+    volumes:
+      - ./locust/:/mnt/locust
+    command: locust -f /mnt/locust/locustfile.py --host http://app:8000
+    depends_on:
+      - app
+  
+  mongodb:
+    image: mongo:latest
+    restart: always
+    container_name: mongodb
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
+    volumes:
+      - dbdata:/data/db
+    ports:
+      - "27018:27017"
+
+volumes:
+  dbdata:
